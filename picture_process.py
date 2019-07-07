@@ -1,14 +1,14 @@
 from PIL import Image
 import os
 
-origin_path = 'E:\\Dataset\\WatermelonPic\\'
-dst_path = 'E:\\Dataset\\Watermelon442\\'
+origin_path = 'E:\\Dataset\\上传\\苹果\\苹果4-157除313=0.50159\\'
+dst_path = 'E:\\Dataset\\上传\\Apple\\'
 for dir_name in os.listdir(origin_path):
     full_path = os.path.join(origin_path, dir_name)
     count = 1
     for pic in os.listdir(full_path):
         im = Image.open(os.path.join(full_path, pic))
-        out = im.resize((442, 442), Image.ANTIALIAS)
+        out = im.resize((256, 256), Image.ANTIALIAS)
         out.save(dst_path + dir_name + '-' + str(count) + '.jpg')
         count = count + 1
     print('finish ' + dir_name)

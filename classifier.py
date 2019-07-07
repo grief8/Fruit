@@ -5,7 +5,7 @@ import torch.nn as nn
 import torchvision.transforms as transforms
 from visdom import Visdom
 import numpy as np
-from data_reader import MyDataset
+from data_reader import ClassDataset
 
 from networks import *
 
@@ -13,21 +13,20 @@ vis = Visdom(env='model_1')
 # Device configuration
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 # Hyper parameters
-num_epochs = 20
+num_epochs = 30
 num_classes = 3
 batch_size = 3
 learning_rate = 0.001
 # dataset
-data_path = 'E:\\Dataset\\Watermelon221\\'
 
-train_file = 'summary.txt'
-test_file = 'test.txt'
-train_data = MyDataset(data_path, train_file,
+train_file = 'classifier_summary.txt'
+test_file = 'classifier_test.txt'
+train_data = ClassDataset(train_file,
                        transform=transforms.ToTensor())
 train_loader = torch.utils.data.DataLoader(dataset=train_data,
                                            batch_size=batch_size,
                                            shuffle=True)
-test_data = MyDataset(data_path, test_file,
+test_data = ClassDataset(test_file,
                       transform=transforms.ToTensor())
 test_loader = torch.utils.data.DataLoader(dataset=test_data,
                                           batch_size=1,
@@ -38,10 +37,10 @@ test_loader = torch.utils.data.DataLoader(dataset=test_data,
 # model = resnet18(pretrained=False).to(device)
 # model = alexnet().to(device)
 model = ResNet18().to(device)
-# model = VGG('VGG11').to(device)
-if os.path.exists('model.pkl'):
-    # model.load_state_dict(torch.load('model.pkl'))
-    model = torch.load('model.pkl')
+# model = VGG('VGG16').to(device)
+# if os.path.exists('model.pkl'):
+#     # model.load_state_dict(torch.load('model.pkl'))
+#     model = torch.load('model.pkl')
 
 # Loss and optimizer
 criterion = nn.CrossEntropyLoss()
@@ -88,7 +87,7 @@ for epoch in range(num_epochs):
         vis.line(X=torch.FloatTensor([epoch]), Y=torch.FloatTensor([100 * correct / total]), win='acc',
                  update='append' if i > 0 else None)
         print('Test Accuracy of the model on the test data: {} %'.format(100 * correct / total))
-    for i in range(num_classes):
+    for i in range(num_classes + 1):
         print(acc[i])
 # Save the model checkpoint
 # torch.save(model.state_dict(), 'model.pkl')
